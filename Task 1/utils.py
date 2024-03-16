@@ -12,7 +12,7 @@ def save_model(model):
 
     # SAVE TO ONNX
     torch.onnx.export(
-        model,
+        model.to(torch.device("cpu")),
         torch.randn(1, 3, 32, 32),
         filename + ".onnx",
         export_params=True,

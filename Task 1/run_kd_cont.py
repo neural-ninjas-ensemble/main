@@ -18,8 +18,8 @@ import pandas as pd
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    BATCH_SIZE = 8
-    EPOCHS = 10
+    BATCH_SIZE = 64
+    EPOCHS = 30
     LR = 3e-4
 
     dataset1 = torch.load("./data/ModelStealing.pt")
