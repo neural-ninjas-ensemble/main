@@ -17,10 +17,10 @@ def save_model(model):
     onnx_program.save(filename + ".onnx")
 
 
-def save_history(history):
+def save_history(history, loss_name):
     now = datetime.now()
-    filename = f"./reports/report_{now.hour}:{now.minute}"
+    filename = f"./reports/{loss_name}_{now.hour}:{now.minute}"
 
     df = pd.DataFrame(history)
-    df.columns = ["cont_loss", "l2_loss"]
+    df.columns = [loss_name, "l2_loss"]
     df.to_csv(filename + ".csv", index=False)

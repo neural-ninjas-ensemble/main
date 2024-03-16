@@ -21,7 +21,7 @@ def eval(device, epoch, model, criterion, val_loader):
             l2_running_loss += loss_l2.item()
             num_batches += 1
 
-    cont_loss = running_loss / num_batches
+    spec_loss = running_loss / num_batches
     l2_loss = l2_running_loss / num_batches
-    print(f"Epoch: {epoch} | Cont-loss: {cont_loss:.4f} | L2-loss: {l2_loss:.4f}")
-    return cont_loss, l2_loss
+    print(f"Epoch: {epoch} | Loss: {spec_loss:.4f} | L2-loss: {l2_loss:.4f}")
+    return spec_loss, l2_loss
