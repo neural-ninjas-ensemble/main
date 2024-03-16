@@ -3,8 +3,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, PILToTensor
 
-from contrastive_loss import ContrastiveLoss
-from knowledge_distillation import KDLoss
+from loss_functions import ContrastiveLoss
 from custom_model import Encoder
 from taskdataset import TaskDataset
 from dataset_merger import DatasetMerger
@@ -18,14 +17,7 @@ import numpy as np
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    # RESNET CODE --------
-    # model = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
-    # encoder = torch.nn.Sequential(*(list(model.children())[:-1]))
-    # print(encoder)
-    # print(sum(p.numel() for p in encoder.parameters() if p.requires_grad))
-    # --------------------
-
-    BATCH_SIZE = 1
+    BATCH_SIZE = 8
     EPOCHS = 10
     LR = 3e-4
 
@@ -39,19 +31,20 @@ def main():
 
     model = Encoder().to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
-    criterion = KDLoss(T=2)
+    criterion = ContrastiveLoss(BATCH_SIZE)
 
     # TRAINING
     history = np.zeros((EPOCHS, 2))
     for epoch in range(EPOCHS):
-        train_epoch(device, model, criterion, optimizer, train_loader)
-        cont_loss, l2_loss = eval(device, epoch, model, criterion, train_loader)
+        # train_epoch(device, model, criterion, optimizer, train_loader)
+        loss, l2_loss = eval(device, epoch, model, criterion, train_loader)
 
-        history[epoch, 0] = cont_loss
+        history[epoch, 0] = loss
         history[epoch, 1] = l2_loss
+        break
 
     # SAVE SCORE HISTORY
-    save_history(history)
+    save_history(history, "cont_loss")
 
     # SAVE MODEL
     save_model(model)
