@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, PILToTensor, RandomHorizontalFlip, ColorJitter
@@ -45,7 +46,8 @@ def main():
 
     model = Encoder().to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
-    criterion = ContrastiveLoss(BATCH_SIZE)
+    # criterion = ContrastiveLoss(BATCH_SIZE)
+    criterion = nn.MSELoss()
 
     # TRAINING
     history = np.zeros((EPOCHS, 2))
