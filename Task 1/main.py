@@ -11,6 +11,9 @@ from taskdataset import TaskDataset
 from dataset_merger import DatasetMerger
 from train import train_epoch
 from test import eval
+from utils import save_model, save_history
+
+import numpy as np
 
 
 def main():
@@ -52,13 +55,19 @@ def main():
     criterion = ContrastiveLoss(batch_size=BATCH_SIZE, temperature=0.5)
 
     # TRAINING
+    history = np.zeros((EPOCHS, 2))
     for epoch in range(EPOCHS):
         train_epoch(device, model, criterion, optimizer, train_loader)
         cont_loss, l2_loss = eval(device, epoch, model, criterion, train_loader)
 
+        history[epoch, 0] = cont_loss
+        history[epoch, 1] = l2_loss
+
+    # SAVE SCORE HISTORY
+    save_history(history)
 
     # SAVE MODEL
-    torch.save(model.state_dict(), "./models/model_kd.pth")
+    save_model(model)
 
 
 if __name__ == '__main__':

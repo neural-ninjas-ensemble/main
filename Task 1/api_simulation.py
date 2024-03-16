@@ -96,8 +96,7 @@ def model_stealing(path_to_png_file: str):
         response = requests.get(url, files={"file": f}, headers={"token": TEAM_TOKEN})
         if response.status_code == 200:
             representation = response.json()["representation"]
-            print("Request ok")
-            print(representation)
+            return representation
         else:
             raise Exception(
                 f"Model stealing failed. Code: {response.status_code}, content: {response.json()}"
