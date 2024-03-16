@@ -16,7 +16,6 @@ def eval(device, epoch, model, criterion, val_loader):
 
             loss = criterion(target_emb, our_emb)
             loss_l2 = mse_loss(our_emb, target_emb)
-            print(loss.item())
 
             running_loss += loss.item()
             l2_running_loss += loss_l2.item()
