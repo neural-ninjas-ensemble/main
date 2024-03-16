@@ -1,5 +1,10 @@
 # Byte-compiled / optimized / DLL files
 *.pt
+*.pth
+*.onnx
+*.csv
+*.sarif
+
 __pycache__/
 *.py[cod]
 *$py.class
