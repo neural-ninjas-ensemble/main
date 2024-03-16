@@ -22,9 +22,6 @@ def main():
     EPOCHS = 10
     LR = 3e-4
 
-    # enc = torch.rand(13000, 512)
-    # torch.save(enc, "./data/TargetEmbeddings.pt")
-
     ids = pd.read_csv("./data/ids.csv")["id"]
     dataset1 = torch.load("./data/ModelStealingPub.pt")
     dataset1.transform = Compose([

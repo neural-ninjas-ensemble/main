@@ -7,14 +7,17 @@ def save_model(model):
     now = datetime.now()
     filename = f"./models/model_{now.hour}:{now.minute}"
 
-    model.eval()
     # SAVE TO PTH
     torch.save(model.state_dict(), filename + ".pth")
 
     # SAVE TO ONNX
-    torch_input = torch.randn(1, 3, 32, 32)
-    onnx_program = torch.onnx.dynamo_export(model, torch_input)
-    onnx_program.save(filename + ".onnx")
+    torch.onnx.export(
+        model,
+        torch.randn(1, 3, 32, 32),
+        filename + ".onnx",
+        export_params=True,
+        input_names=["x"],
+    )
 
 
 def save_history(history, loss_name):
