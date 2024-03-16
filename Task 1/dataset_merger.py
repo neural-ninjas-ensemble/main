@@ -12,7 +12,8 @@ class DatasetMerger(Dataset):
         id_, img, label = self.dataset1[index]
 
         target_embedding = self.target_tensors[index]
-
+        if img.shape != torch.Size([3, 32, 32]):
+            img = torch.cat((img, img, img), dim=0)
         return id_, img, label, target_embedding
 
     def __len__(self):

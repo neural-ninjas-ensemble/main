@@ -9,6 +9,7 @@ from torchvision.transforms.functional import pil_to_tensor
 from contrastive_loss import ContrastiveLoss
 from custom_model import Encoder
 from taskdataset import TaskDataset
+from dataset_merger import DatasetMerger
 from train import train_epoch
 from test import eval
 
@@ -27,10 +28,12 @@ def main():
     EPOCHS = 10
     LR = 3e-4
 
-    dataset = torch.load("./data/ModelStealing.pt")
-    dataset.transform = Compose([
+    dataset1 = torch.load("./data/ModelStealing.pt")
+    dataset1.transform = Compose([
         PILToTensor(),
     ])
+    dataset = DatasetMerger(dataset1, "./data/TargetEmbeddings.pt")
+
     train_loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     model = Encoder()
