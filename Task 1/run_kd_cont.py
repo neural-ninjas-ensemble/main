@@ -9,7 +9,7 @@ from taskdataset import TaskDataset
 from dataset_merger import DatasetMerger
 from train import train_epoch
 from test import eval
-from utils import save_model, save_history
+from utils import save_model, save_history, get_position_by_id
 
 import numpy as np
 import pandas as pd
@@ -22,21 +22,23 @@ def main():
     EPOCHS = 10
     LR = 3e-4
 
-    ids = pd.read_csv("./data/ids.csv")["id"]
-    dataset1 = torch.load("./data/ModelStealingPub.pt")
+    dataset1 = torch.load("./data/ModelStealing.pt")
     dataset1.transform = Compose([
         PILToTensor(),
     ])
+
+    ids = pd.read_csv("./data/ids500.csv")["id"]
+    ids = get_position_by_id(ids.values, dataset1)
     subset_dataset1 = torch.utils.data.Subset(dataset1, ids)
 
-    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings.pt")
+    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings500.pt")
 
     train_size = int(0.8 * len(dataset))
     test_size = len(dataset) - train_size
     train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
 
-    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
+    test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
 
     model = Encoder().to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)

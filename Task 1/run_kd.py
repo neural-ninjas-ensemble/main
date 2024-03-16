@@ -10,7 +10,7 @@ from taskdataset import TaskDataset
 from dataset_merger import DatasetMerger
 from train import train_epoch
 from test import eval
-from utils import save_model, save_history
+from utils import save_model, save_history, get_position_by_id
 
 import numpy as np
 
@@ -22,14 +22,16 @@ def main():
     EPOCHS = 10
     LR = 3e-4
 
-    ids = pd.read_csv("./data/ids.csv")["id"]
-    dataset1 = torch.load("./data/ModelStealingPub.pt")
+    dataset1 = torch.load("./data/ModelStealing.pt")
     dataset1.transform = Compose([
         PILToTensor(),
     ])
+
+    ids = pd.read_csv("./data/ids500.csv")["id"]
+    ids = get_position_by_id(ids.values, dataset1)
     subset_dataset1 = torch.utils.data.Subset(dataset1, ids)
 
-    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings.pt")
+    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings500.pt")
 
     train_size = int(0.8 * len(dataset))
     test_size = len(dataset) - train_size
@@ -50,6 +52,7 @@ def main():
 
         history[epoch, 0] = loss
         history[epoch, 1] = l2_loss
+        break
 
     # SAVE SCORE HISTORY
     save_history(history, "kd_loss")
