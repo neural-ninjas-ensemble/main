@@ -43,14 +43,13 @@ def main():
 
     model = Encoder().to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
-    # criterion = KDLoss(T=2)
-    criterion = ContrastiveLoss(batch_size=BATCH_SIZE, temperature=0.5)
+    criterion = KDLoss(T=2)
 
     # TRAINING
     history = np.zeros((EPOCHS, 2))
     for epoch in range(EPOCHS):
         train_epoch(device, model, criterion, optimizer, train_loader)
-        loss, l2_loss = eval(device, epoch, model, criterion, train_loader)
+        loss, l2_loss = eval(device, epoch, model, criterion, test_loader)
 
         history[epoch, 0] = loss
         history[epoch, 1] = l2_loss
