@@ -135,10 +135,9 @@ def model_stealing_reset():
         )
 
 if __name__ == '__main__':
+    sybil_reset("binary", "home")
     sybil(
         [101031, 8526, 43127, 191394, 298792, 121086, 149475, 102605, 163605, 101855],
         "home",
         "affine",
     )
-    sybil_submit("binary", "data/example_submission.npz")
-    sybil_reset("binary", "home")
