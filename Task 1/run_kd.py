@@ -27,11 +27,11 @@ def main():
         PILToTensor(),
     ])
 
-    ids = pd.read_csv("./data/ids500.csv")["id"]
+    ids = pd.read_csv("./data/ids2000.csv")["id"]
     ids = get_position_by_id(ids.values, dataset1)
     subset_dataset1 = torch.utils.data.Subset(dataset1, ids)
 
-    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings500.pt")
+    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings2000.pt")
 
     train_size = int(0.8 * len(dataset))
     test_size = len(dataset) - train_size

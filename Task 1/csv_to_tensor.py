@@ -1,7 +1,7 @@
 import torch
 import pandas as pd
 
-num = 500
+num = 2000
 
 vector_list=[]
 for vector in pd.read_csv(f'./data/target_embeding_{num}.csv')['1'].values:
