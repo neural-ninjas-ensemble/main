@@ -16,11 +16,12 @@ import pandas as pd
 
 
 def main():
+    torch.manual_seed(42)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    BATCH_SIZE = 64
+    BATCH_SIZE = 128
     EPOCHS = 30
-    LR = 3e-4
+    LR = 0.001
 
     dataset1 = torch.load("./data/ModelStealing.pt")
     dataset1.transform = Compose([
