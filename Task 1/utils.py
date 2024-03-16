@@ -27,3 +27,9 @@ def save_history(history, loss_name):
     df = pd.DataFrame(history)
     df.columns = [loss_name, "l2_loss"]
     df.to_csv(filename + ".csv", index=False)
+
+
+def get_position_by_id(ids, dataset):
+    df = pd.DataFrame([dataset.ids]).T
+    df.columns =['id']
+    return torch.from_numpy(df.index[df['id'].isin(ids)].values)
