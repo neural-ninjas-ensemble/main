@@ -11,10 +11,12 @@ def eval(device, epoch, model, criterion, val_loader):
     with torch.no_grad():
         for batch_idx, (id_, data, label, target_emb) in enumerate(val_loader):
             data = data.float().to(device)
+            target_emb = target_emb.to(device)
             our_emb = model(data)
 
             loss = criterion(target_emb, our_emb)
             loss_l2 = mse_loss(our_emb, target_emb)
+            print(loss.item())
 
             running_loss += loss.item()
             l2_running_loss += loss_l2.item()
