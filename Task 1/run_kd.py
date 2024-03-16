@@ -1,4 +1,5 @@
 import torch
+import pandas as pd
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, PILToTensor
@@ -21,17 +22,29 @@ def main():
     EPOCHS = 10
     LR = 3e-4
 
-    dataset1 = torch.load("./data/ModelStealing.pt")
+    # enc = torch.rand(13000, 512)
+    # torch.save(enc, "./data/TargetEmbeddings.pt")
+
+    ids = pd.read_csv("./data/ids.csv")["id"]
+    dataset1 = torch.load("./data/ModelStealingPub.pt")
     dataset1.transform = Compose([
         PILToTensor(),
     ])
-    dataset = DatasetMerger(dataset1, "./data/TargetEmbeddings.pt")
+    subset_dataset1 = torch.utils.data.Subset(dataset1, ids)
 
-    train_loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
+    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings.pt")
+
+    train_size = int(0.8 * len(dataset))
+    test_size = len(dataset) - train_size
+    train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
+
+    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     model = Encoder().to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
-    criterion = KDLoss(T=2)
+    # criterion = KDLoss(T=2)
+    criterion = ContrastiveLoss(batch_size=BATCH_SIZE, temperature=0.5)
 
     # TRAINING
     history = np.zeros((EPOCHS, 2))
