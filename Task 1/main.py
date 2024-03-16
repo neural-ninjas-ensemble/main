@@ -44,5 +44,9 @@ def main():
         cont_loss, l2_loss = eval(device, epoch, model, criterion, train_loader)
 
 
+    # SAVE MODEL
+    torch.save(model.state_dict(), "./models/model_kd.pth")
+
+
 if __name__ == '__main__':
     main()
