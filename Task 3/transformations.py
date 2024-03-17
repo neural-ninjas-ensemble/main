@@ -1,6 +1,24 @@
 import torch
 from torchvision.transforms import v2
 
+class Task3Dataset(Dataset):
+    def __init__(self, transform=None):
+
+        self.data = []
+        self.labels = []
+
+        # self.transform = transform
+
+    def __getitem__(self, index) -> Tuple[torch.Tensor, int]:
+        data = self.data[index]
+        label = self.labels[index]
+        # if not self.transform is None:
+        #     img = self.transform(img)
+        # label = self.labels[index]
+        return data, label
+
+    def __len__(self):
+        return len(self.ids)
 
 
 def transform_img(img):
