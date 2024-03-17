@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, PILToTensor, RandomHorizontalFlip, ColorJitter
@@ -16,11 +17,12 @@ import pandas as pd
 
 
 def main():
+    torch.manual_seed(42)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    BATCH_SIZE = 64
+    BATCH_SIZE = 128
     EPOCHS = 30
-    LR = 3e-4
+    LR = 0.001
 
     dataset1 = torch.load("./data/ModelStealing.pt")
     dataset1.transform = Compose([
@@ -44,7 +46,8 @@ def main():
 
     model = Encoder().to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
-    criterion = ContrastiveLoss(BATCH_SIZE)
+    # criterion = ContrastiveLoss(BATCH_SIZE)
+    criterion = nn.MSELoss()
 
     # TRAINING
     history = np.zeros((EPOCHS, 2))

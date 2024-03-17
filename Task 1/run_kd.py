@@ -16,6 +16,7 @@ import numpy as np
 
 
 def main():
+    torch.manual_seed(42)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     BATCH_SIZE = 64

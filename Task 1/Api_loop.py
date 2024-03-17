@@ -49,17 +49,24 @@ ids = pd.read_csv(ID_ORDER_FILE_PATH).drop(columns = ['Unnamed: 0']).squeeze().v
 control_embeding = ret_embeding_from_id(df,control_id)
 
 target_embedings = []
-checkpoint_embedings = [(control_id,control_embeding)]
+checkpoint_embedings = [control_embeding]
 iter = 0
 for id in tqdm(ids,total=len(ids)):
     if id != control_id:
         #embedings = []
         iter +=1
 
+        if iter % 100 == 0:
+            try:
+                checkpoint_embedings.append(ret_embeding_from_id(df,control_id))
+            except Exception:
+                print(f"Error on id {control_id}")
+                continue
+
+        
         try:
 
           target_embedings.append((id,ret_embeding_from_id(df,id)))
-          checkpoint_embedings.append(ret_embeding_from_id(df,control_id))
 
         except Exception:
             print(f"Error on id {id}")
