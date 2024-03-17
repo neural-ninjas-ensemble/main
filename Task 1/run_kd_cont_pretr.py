@@ -24,8 +24,8 @@ def main():
     # device = torch.device("cpu")
 
     BATCH_SIZE = 128
-    PRETRAINING_EPOCHS = 2
-    EPOCHS = 20
+    PRETRAINING_EPOCHS = 3
+    EPOCHS = 30
     LR = 0.001
 
     dataset1 = torch.load("./data/ModelStealing.pt")
