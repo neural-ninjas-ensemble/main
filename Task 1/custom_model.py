@@ -12,23 +12,23 @@ class Encoder(nn.Module):
             nn.GELU(),
             nn.Dropout2d(0.5),
 
-            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding='same', bias=False),
+            nn.Conv2d(16, 16, kernel_size=3, stride=1, padding='same', bias=False),
             nn.BatchNorm2d(32),
             nn.GELU(),
             nn.MaxPool2d(2),
             nn.Dropout2d(0.4),
 
-            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding='same', bias=False),
+            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding='same', bias=False),
             nn.BatchNorm2d(32),
             nn.GELU(),
             nn.Dropout2d(0.25),
 
-            nn.Conv2d(32, 64, kernel_size=3, stride=1, padding='same', bias=True),
+            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding='same', bias=True),
             nn.LeakyReLU(inplace=True),
             nn.MaxPool2d(2),
 
             nn.Flatten(),
-            nn.Linear(4096, 512)
+            nn.Linear(2048, 512)
         )
 
     def forward(self, x):
