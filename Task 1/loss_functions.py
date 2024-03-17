@@ -66,6 +66,6 @@ class ContKDLoss(nn.Module):
         soft_prob = nn.functional.log_softmax(emb_surrogate / self.T, dim=-1)
         kd_loss = torch.sum(soft_targets * (soft_targets.log() - soft_prob)) / soft_prob.size()[0] * (self.T ** 2)
 
-        mse = nn.functional.mse_loss(emb_surrogate, emb_target)
+        mse = nn.functional.mse_loss(emb_surrogate.float(), emb_target.float())
 
         return cont_loss + self.kd_weight * kd_loss + mse
