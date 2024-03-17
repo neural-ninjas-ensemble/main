@@ -13,6 +13,7 @@ from utils import save_model, save_history, get_position_by_id
 
 import numpy as np
 import pandas as pd
+from datetime import datetime
 
 
 def main():
@@ -20,7 +21,7 @@ def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     BATCH_SIZE = 128
-    EPOCHS = 30
+    EPOCHS = 16
     LR = 0.001
 
     dataset1 = torch.load("./data/ModelStealing.pt")
@@ -40,25 +41,33 @@ def main():
 
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
+    full_loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
 
     model = Encoder().to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
-    criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=1)
+    criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
 
     # TRAINING
+
+    now = datetime.now()
+    hour = f"{now.hour}:{now.minute}"
+
+    best_loss = 1000.
     history = np.zeros((EPOCHS, 2))
     for epoch in range(EPOCHS):
-        train_epoch(device, model, criterion, optimizer, train_loader)
+        train_epoch(device, model, criterion, optimizer, full_loader)
         loss, l2_loss = eval(device, epoch, model, criterion, test_loader)
+
+        if l2_loss < best_loss:
+            best_loss = l2_loss
+            save_model(model, hour)
 
         history[epoch, 0] = loss
         history[epoch, 1] = l2_loss
 
-    # SAVE SCORE HISTORY
-    save_history(history, "kd_cont_loss")
 
-    # SAVE MODEL
-    save_model(model)
+    # SAVE SCORE HISTORY
+    save_history(history, "kd_cont_loss", hour)
 
 
 if __name__ == '__main__':
