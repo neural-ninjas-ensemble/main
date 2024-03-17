@@ -13,11 +13,11 @@ df1 = pd.DataFrame(vector_list)
 _1 = pd.read_csv(f'./data/data_dla_wojtka/target_embeding_{num}.csv')['0']
 
 num2 = 2000
-_2 = pd.read_csv(f'./data/data_dla_wojtka/target_embeding_{num}.csv')['0']
+_2 = pd.read_csv(f'./data/data_dla_wojtka/target_embeding_{num2}.csv')['0']
 
 
 vector_list=[]
-for vector in pd.read_csv(f'./data/data_dla_wojtka/target_embeding_{num}.csv')['1'].values:
+for vector in pd.read_csv(f'./data/data_dla_wojtka/target_embeding_{num2}.csv')['1'].values:
     vector_list.append([ float( i) for i in vector.strip('][').split(', ')])
 df2 = pd.DataFrame(vector_list)
 df3 = pd.concat([df1,df2])
