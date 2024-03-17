@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, PILToTensor, RandomHorizontalFlip, ColorJitter
 
 from loss_functions import ContKDLoss
-from custom_model import Encoder, Identity
+from custom_model import Encoder
 from taskdataset import TaskDataset
 from dataset_merger import DatasetMerger
 from train import train_epoch
@@ -46,7 +46,6 @@ def main():
     full_loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
 
     model = Encoder().to(device)
-    model.fc = Identity()
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
 
