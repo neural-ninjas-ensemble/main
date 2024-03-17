@@ -58,7 +58,7 @@ def main():
         train_epoch_pretr(device, model, pretr_criterion, pretr_optimizer, full_loader)
         eval_pretr(device, epoch, model, pretr_criterion, test_loader)
 
-    sd = model.state_dict().deepcopy()
+    sd = deepcopy(model.state_dict())
 
     model = Encoder()
     model.load_state_dict(sd)
