@@ -1,12 +1,9 @@
 import torch
 import pandas as pd
-from datetime import datetime
 
 
-def save_model(model):
-    now = datetime.now()
-    filename = f"./models/model_{now.hour}:{now.minute}"
-
+def save_model(model, hour):
+    filename = f"./models/model_{hour}"
     # SAVE TO PTH
     torch.save(model.state_dict(), filename + ".pth")
 
@@ -20,10 +17,8 @@ def save_model(model):
     )
 
 
-def save_history(history, loss_name):
-    now = datetime.now()
-    filename = f"./reports/{loss_name}_{now.hour}:{now.minute}"
-
+def save_history(history, loss_name, hour):
+    filename = f"./reports/report_{hour}"
     df = pd.DataFrame(history)
     df.columns = [loss_name, "l2_loss"]
     df.to_csv(filename + ".csv", index=False)
@@ -31,5 +26,5 @@ def save_history(history, loss_name):
 
 def get_position_by_id(ids, dataset):
     df = pd.DataFrame([dataset.ids]).T
-    df.columns =['id']
+    df.columns = ['id']
     return torch.from_numpy(df.index[df['id'].isin(ids)].values)
