@@ -23,6 +23,5 @@ df2 = pd.DataFrame(vector_list)
 df3 = pd.concat([df1,df2])
 _3 = pd.concat([_1,_2])
 tensor = torch.tensor(df3.values)
-torch.save(tensor, f'./data/target_embeding_tensor_2500.pt')
-_3.columns = ['id']
-_3.to_csv('./data/id_tagret_2500.csv', index=False)
+torch.save(tensor, f'./data/TargetEmbeddings2500.pt')
+_3.to_csv('./data/ids2500.csv', index=False).rename(columns={'0': 'id'})['id']
