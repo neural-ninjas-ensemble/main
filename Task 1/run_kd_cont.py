@@ -27,8 +27,6 @@ def main():
     dataset1 = torch.load("./data/ModelStealing.pt")
     dataset1.transform = Compose([
         PILToTensor(),
-        RandomHorizontalFlip(p=0.5),
-        ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
     ])
 
     ids = pd.read_csv("./data/ids2000.csv")["id"]
