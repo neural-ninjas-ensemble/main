@@ -25,7 +25,7 @@ def main():
 
     BATCH_SIZE = 128
     PRETRAINING_EPOCHS = 5
-    EPOCHS = 30
+    EPOCHS = 50
     LR = 0.001
 
     dataset1 = torch.load("./data/ModelStealing.pt")
