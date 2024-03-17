@@ -28,3 +28,13 @@ def get_position_by_id(ids, dataset):
     df = pd.DataFrame([dataset.ids]).T
     df.columns = ['id']
     return torch.from_numpy(df.index[df['id'].isin(ids)].values)
+
+
+def get_class_dict():
+    dataset = torch.load("./data/ModelStealing.pt")
+    df = pd.DataFrame([dataset.ids,dataset.labels]).T
+    df.columns =['id', 'labels']
+    unique = df.labels.unique()
+    nunique_ids = df.labels.nunique()
+    dict_transform = {unique[i]: i for i in range(nunique_ids)}
+    return dict_transform

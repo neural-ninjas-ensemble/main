@@ -38,7 +38,7 @@ def eval_pretr(device, epoch, model, criterion, val_loader):
             target_emb = target_emb.to(device)
             our_emb = model(data)
 
-            loss = criterion(target_emb, our_emb)
+            loss = criterion(our_emb, label)
 
             running_loss += loss.item()
             num_batches += 1

@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, PILToTensor
 
 from loss_functions import ContKDLoss
-from custom_model import Encoder
+from custom_model import Encoder, Identity
 from taskdataset import TaskDataset
 from dataset_merger import DatasetMerger
 from train import train_epoch, train_epoch_pretr
@@ -21,9 +21,9 @@ def main():
     torch.manual_seed(42)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    BATCH_SIZE = 8
-    PRETRAINING_EPOCHS = 2
-    EPOCHS = 30
+    BATCH_SIZE = 128
+    PRETRAINING_EPOCHS = 20
+    EPOCHS = 20
     LR = 0.001
 
     dataset1 = torch.load("./data/ModelStealing.pt")
@@ -31,11 +31,11 @@ def main():
         PILToTensor(),
     ])
 
-    ids = pd.read_csv("./data/ids500.csv")["id"]
+    ids = pd.read_csv("./data/ids2000.csv")["id"]
     ids = get_position_by_id(ids.values, dataset1)
     subset_dataset1 = torch.utils.data.Subset(dataset1, ids)
 
-    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings500.pt")
+    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings2000.pt")
 
     train_size = int(0.8 * len(dataset))
     test_size = len(dataset) - train_size
@@ -51,10 +51,11 @@ def main():
 
     # PRETRAINING
     for epoch in range(PRETRAINING_EPOCHS):
-        train_epoch_pretr(device, model, pretr_criterion, pretr_optimizer, train_loader)
+        train_epoch_pretr(device, model, pretr_criterion, pretr_optimizer, full_loader)
         eval_pretr(device, epoch, model, pretr_criterion, test_loader)
 
 
+    model.fc = Identity()
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
 
@@ -74,7 +75,6 @@ def main():
 
         history[epoch, 0] = loss
         history[epoch, 1] = l2_loss
-
 
     # SAVE SCORE HISTORY
     save_history(history, "kd_cont_pretr_loss", hour)

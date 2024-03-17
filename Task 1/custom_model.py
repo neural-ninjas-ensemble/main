@@ -25,6 +25,17 @@ class Encoder(nn.Module):
             nn.Flatten(),
             nn.Linear(2048, 512)
         )
+        self.fc = nn.Linear(512, 50)
 
     def forward(self, x):
-        return self.block(x)
+        x = self.block(x)
+        x = self.fc(x)
+        return x
+
+
+class Identity(nn.Module):
+    def __init__(self):
+        super(Identity, self).__init__()
+
+    def forward(self, x):
+        return x
