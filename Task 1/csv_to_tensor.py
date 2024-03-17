@@ -24,4 +24,5 @@ df3 = pd.concat([df1,df2])
 _3 = pd.concat([_1,_2])
 tensor = torch.tensor(df3.values)
 torch.save(tensor, f'./data/target_embeding_tensor_2500.pt')
-_3.to_csv('./data/id_tagret_2500.csv')
+_3.columns = ['id']
+_3.to_csv('./data/id_tagret_2500.csv', index=False)
