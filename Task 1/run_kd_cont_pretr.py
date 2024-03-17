@@ -60,10 +60,10 @@ def main():
         train_epoch_pretr(device, model, fc, pretr_criterion, pretr_optimizer, full_loader)
         eval_pretr(device, epoch, model, fc, pretr_criterion, test_loader)
 
-    training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
+    training(device, model, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
 
 
-def training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
+def training(device, model, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
     # TRAINING
@@ -80,6 +80,7 @@ def training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
         if l2_loss < best_loss:
             best_loss = l2_loss
             save_model(model, hour)
+            model.to(device)
 
         history[epoch, 0] = loss
         history[epoch, 1] = l2_loss
