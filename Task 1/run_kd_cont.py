@@ -20,7 +20,7 @@ def main():
     torch.manual_seed(42)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    BATCH_SIZE = 128
+    BATCH_SIZE = 256
     EPOCHS = 30
     LR = 0.0013
 
@@ -44,7 +44,7 @@ def main():
     full_loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
 
     model = Encoder().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=LR)
+    optimizer = optim.Adam(model.parameters(), lr=LR, weight_decay=0.0005)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
 
     # TRAINING
