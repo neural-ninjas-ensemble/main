@@ -7,24 +7,24 @@ class Encoder(nn.Module):
         super(Encoder, self).__init__()
 
         self.block = nn.Sequential(
-            nn.Conv2d(3, 8, kernel_size=7, stride=1, padding='same', bias=False),
+            nn.Conv2d(3, 16, kernel_size=7, stride=1, padding='same', bias=False),
             nn.BatchNorm2d(8),
             nn.GELU(),
             nn.Dropout2d(0.4),
 
-            nn.Conv2d(8, 16, kernel_size=3, stride=1, padding='same', bias=False),
+            nn.Conv2d(16, 16, kernel_size=3, stride=1, padding='same', bias=False),
             nn.BatchNorm2d(16),
             nn.GELU(),
             nn.MaxPool2d(2),
             nn.Dropout2d(0.25),
 
-            nn.Conv2d(16, 16, kernel_size=3, stride=1, padding='same', bias=False),
+            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding='same', bias=False),
             nn.BatchNorm2d(16),
             nn.GELU(),
             nn.Dropout2d(0.25),
 
-            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding='same', bias=True),
-            nn.ReLU(inplace=True),
+            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding='same', bias=True),
+            nn.LeakyReLU(inplace=True),
             nn.MaxPool2d(2),
 
             nn.Flatten(),
