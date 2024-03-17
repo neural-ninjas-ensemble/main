@@ -23,9 +23,9 @@ def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     # device = torch.device("cpu")
 
-    BATCH_SIZE = 128
-    PRETRAINING_EPOCHS = 5
-    EPOCHS = 40
+    BATCH_SIZE = 256
+    PRETRAINING_EPOCHS = 7
+    EPOCHS = 30
     LR = 0.0013
 
     dataset1 = torch.load("./data/ModelStealing.pt")
