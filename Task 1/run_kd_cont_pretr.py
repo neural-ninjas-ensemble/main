@@ -20,7 +20,8 @@ from copy import deepcopy
 
 def main():
     torch.manual_seed(42)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
 
     BATCH_SIZE = 128
     PRETRAINING_EPOCHS = 2
