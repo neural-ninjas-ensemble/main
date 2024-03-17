@@ -63,8 +63,7 @@ def main():
     training(device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
 
 
-def training(device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
-    model = Encoder().to(device)
+def training(device, model, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
     # TRAINING
