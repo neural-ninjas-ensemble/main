@@ -21,7 +21,6 @@ class Encoder(nn.Module):
             nn.Conv2d(16, 16, kernel_size=3, stride=1, padding='same', bias=False),
             nn.BatchNorm2d(16),
             nn.GELU(),
-            nn.MaxPool2d(2),
             nn.Dropout2d(0.25),
 
             nn.Conv2d(16, 32, kernel_size=3, stride=1, padding='same', bias=True),
