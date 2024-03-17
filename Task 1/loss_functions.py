@@ -68,4 +68,4 @@ class ContKDLoss(nn.Module):
 
         mse = nn.functional.mse_loss(emb_surrogate.float(), emb_target.float())
 
-        return cont_loss + self.kd_weight * kd_loss + mse
+        return cont_loss + self.kd_weight * kd_loss + 2 * mse
