@@ -41,20 +41,20 @@ def make_user_queries(path_to_data: str, query_limit: int=2000, calib_len: int=1
     return ids_users
 
 
-def query_sybil_full_dataset_affine(data_path: str) -> pd.DataFrame:
-    sybil_reset('affine', 'home')
-    sybil_reset('affine', 'defense')
+def query_sybil_full_dataset_binary(data_path: str) -> pd.DataFrame:
+    sybil_reset('binary', 'home')
+    sybil_reset('binary', 'defense')
 
     # list of 19 lists each of 2000 ids
-    ids_users = make_user_queries(data_path)
+    ids_users = make_user_queries(data_path, calib_len=200)
 
     # result dict
     result = {}
 
     # user 0 home
     user0_calib, user0_new = ids_users[0]
-    user0_calib_reps = sybil(user0_calib, 'home', 'affine')
-    user0_new_reps = sybil(user0_new, 'home', 'affine')
+    user0_calib_reps = sybil(user0_calib, 'home', 'binary')
+    user0_new_reps = sybil(user0_new, 'home', 'binary')
     result[0] = {
         'calib': {
             img_id: rep for img_id, rep in zip(user0_calib, user0_calib_reps)
@@ -68,12 +68,63 @@ def query_sybil_full_dataset_affine(data_path: str) -> pd.DataFrame:
     i = 1
     user_num = len(ids_users)
     while i < user_num:
-        sybil_reset('affine', 'defense')
+        sybil_reset('binary', 'defense')
         print(i)
         try:
             this_calib, this_new = ids_users[i]
-            this_calib_reps = sybil(this_calib, 'defense', 'affine')
-            this_new_reps = sybil(this_new, 'defense', 'affine')
+            this_calib_reps = sybil(this_calib, 'defense', 'binary')
+            this_new_reps = sybil(this_new, 'defense', 'binary')
+            
+            result[i] = {
+                'calib': {
+                    img_id: rep for img_id, rep in zip(this_calib, this_calib_reps)
+                },
+                'new': {
+                    img_id: rep for img_id, rep in zip(this_new, this_new_reps)
+                }
+            }
+
+            i = i + 1
+        except Exception:
+            time.sleep(1)
+            print('sleep')
+
+    return result
+
+
+def query_sybil_full_dataset_binary(data_path: str) -> pd.DataFrame:
+    sybil_reset('binary', 'home')
+    sybil_reset('binary', 'defense')
+
+    # list of 19 lists each of 2000 ids
+    ids_users = make_user_queries(data_path, calib_len=200)
+
+    # result dict
+    result = {}
+
+    # user 0 home
+    user0_calib, user0_new = ids_users[0]
+    user0_calib_reps = sybil(user0_calib, 'home', 'binary')
+    user0_new_reps = sybil(user0_new, 'home', 'binary')
+    result[0] = {
+        'calib': {
+            img_id: rep for img_id, rep in zip(user0_calib, user0_calib_reps)
+        },
+        'new': {
+            img_id: rep for img_id, rep in zip(user0_new, user0_new_reps)
+        }
+    }
+    
+    # quer defense with users 1-18
+    i = 1
+    user_num = len(ids_users)
+    while i < user_num:
+        sybil_reset('binary', 'defense')
+        print(i)
+        try:
+            this_calib, this_new = ids_users[i]
+            this_calib_reps = sybil(this_calib, 'defense', 'binary')
+            this_new_reps = sybil(this_new, 'defense', 'binary')
             
             result[i] = {
                 'calib': {
@@ -93,6 +144,7 @@ def query_sybil_full_dataset_affine(data_path: str) -> pd.DataFrame:
 
 
 if __name__ == '__main__':
-    result = query_sybil_full_dataset_affine('/home/hack33/task2/SybilAttack.pt')
-    with open('sybil_data.json', 'w') as f:
+    # result = query_sybil_full_dataset_binary('/home/hack33/task2/SybilAttack.pt')
+    result = query_sybil_full_dataset_binary('/home/hack33/task2/SybilAttack.pt')
+    with open('sybil_data_binary.json', 'w') as f:
         json.dump(result, f, indent=4)
