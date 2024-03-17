@@ -7,7 +7,7 @@ import os
 
 load_dotenv()
 
-SERVER_URL = os.getenv("SERVER_URL")
+SERVER_URL = "http://34.71.138.79:9090"
 TEAM_TOKEN = os.getenv("TEAM_TOKEN")
 
 
