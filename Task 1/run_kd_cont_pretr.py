@@ -58,8 +58,8 @@ def main():
         eval_pretr(device, epoch, model, pretr_criterion, test_loader)
 
 
-    model.fc = Identity()
-    model.to(device)
+    model.fc = Identity().to(device)
+    model = model.to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
 
