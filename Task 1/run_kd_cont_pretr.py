@@ -59,17 +59,11 @@ def main():
         train_epoch_pretr(device, model, pretr_criterion, pretr_optimizer, full_loader)
         eval_pretr(device, epoch, model, pretr_criterion, test_loader)
 
-    sd = deepcopy(model.state_dict())
-
-    training(sd, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
+    training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
 
 
-def training(sd, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
-    model = Encoder()
-    model.load_state_dict(sd)
+def training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
     model.fc = Identity()
-    model = model.to(device)
-    print(model)
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
     # TRAINING
