@@ -60,10 +60,10 @@ def main():
 
     sd = deepcopy(model.state_dict())
 
-    training(sd, device, BATCH_SIZE, LR, EPOCHS)
+    training(sd, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
 
 
-def training(sd, device, BATCH_SIZE, LR, EPOCHS):
+def training(sd, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
     model = Encoder()
     model.load_state_dict(sd)
     model.fc = Identity()
