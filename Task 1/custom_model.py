@@ -27,4 +27,13 @@ class Encoder(nn.Module):
         )
 
     def forward(self, x):
-        return self.block(x)
+        x = self.block(x)
+        return x
+
+
+class Identity(nn.Module):
+    def __init__(self):
+        super(Identity, self).__init__()
+
+    def forward(self, x):
+        return x

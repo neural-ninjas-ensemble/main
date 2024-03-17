@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, PILToTensor
 from torch import nn
 from train import train_epoch
-from test import eval
+# from test import eval
 from utils import save_model, save_history, get_position_by_id
 from load_data import *
 import numpy as np

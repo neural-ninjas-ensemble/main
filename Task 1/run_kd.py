@@ -16,10 +16,11 @@ import numpy as np
 
 
 def main():
+    torch.manual_seed(42)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    BATCH_SIZE = 8
-    EPOCHS = 10
+    BATCH_SIZE = 64
+    EPOCHS = 30
     LR = 3e-4
 
     dataset1 = torch.load("./data/ModelStealing.pt")
@@ -27,11 +28,11 @@ def main():
         PILToTensor(),
     ])
 
-    ids = pd.read_csv("./data/ids500.csv")["id"]
+    ids = pd.read_csv("./data/ids2000.csv")["id"]
     ids = get_position_by_id(ids.values, dataset1)
     subset_dataset1 = torch.utils.data.Subset(dataset1, ids)
 
-    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings500.pt")
+    dataset = DatasetMerger(subset_dataset1, "./data/TargetEmbeddings2000.pt")
 
     train_size = int(0.8 * len(dataset))
     test_size = len(dataset) - train_size
@@ -52,7 +53,6 @@ def main():
 
         history[epoch, 0] = loss
         history[epoch, 1] = l2_loss
-        break
 
     # SAVE SCORE HISTORY
     save_history(history, "kd_loss")
