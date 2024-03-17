@@ -15,6 +15,7 @@ from utils import save_model, save_history, get_position_by_id
 import numpy as np
 import pandas as pd
 from datetime import datetime
+from copy import deepcopy
 
 
 def main():
@@ -22,7 +23,7 @@ def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     BATCH_SIZE = 128
-    PRETRAINING_EPOCHS = 20
+    PRETRAINING_EPOCHS = 2
     EPOCHS = 20
     LR = 0.001
 
@@ -57,8 +58,12 @@ def main():
         train_epoch_pretr(device, model, pretr_criterion, pretr_optimizer, full_loader)
         eval_pretr(device, epoch, model, pretr_criterion, test_loader)
 
+    sd = model.state_dict().deepcopy()
 
-    model.fc = Identity().to(device)
+    model = Encoder()
+    model.load_state_dict(sd)
+    model.fc = Identity()
+    model = model.to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
 
