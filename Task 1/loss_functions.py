@@ -47,8 +47,8 @@ class ContKDLoss(nn.Module):
         self.kd_weight = kd_weight
 
     def forward(self, emb_target, emb_surrogate):
-        # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        device = torch.device("cpu")
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        # device = torch.device("cpu")
         # ----------  CONT-STEAL -------------
         representations = torch.cat([emb_target, emb_surrogate], dim=0)
         similarity_matrix = F.cosine_similarity(representations.unsqueeze(1), representations.unsqueeze(0), dim=2)
