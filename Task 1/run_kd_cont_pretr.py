@@ -52,25 +52,18 @@ def main():
     model = Encoder().to(device)
     pretr_criterion = nn.CrossEntropyLoss()
     pretr_optimizer = optim.Adam(model.parameters(), lr=LR)
+    fc = nn.Linear(512, 50).to(device)
 
     # PRETRAINING
     print("PRETRAINING")
     for epoch in range(PRETRAINING_EPOCHS):
-        train_epoch_pretr(device, model, pretr_criterion, pretr_optimizer, full_loader)
-        eval_pretr(device, epoch, model, pretr_criterion, test_loader)
+        train_epoch_pretr(device, model, fc, pretr_criterion, pretr_optimizer, full_loader)
+        eval_pretr(device, epoch, model, fc, pretr_criterion, test_loader)
 
     training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
 
 
 def training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
-    model.fc = nn.Identity()
-
-    for param in model.parameters():
-        param.requires_grad = True
-        param.data = param.data.to(device)
-        if param._grad is not None:
-            param._grad.data = param._grad.data.to(device)
-
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
     # TRAINING

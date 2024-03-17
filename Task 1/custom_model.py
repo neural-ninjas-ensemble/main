@@ -25,11 +25,9 @@ class Encoder(nn.Module):
             nn.Flatten(),
             nn.Linear(2048, 512)
         )
-        self.fc = nn.Linear(512, 50)
 
     def forward(self, x):
         x = self.block(x)
-        x = self.fc(x)
         return x
 
 

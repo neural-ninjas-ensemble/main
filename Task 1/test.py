@@ -27,7 +27,7 @@ def eval(device, epoch, model, criterion, val_loader):
     return spec_loss, l2_loss
 
 
-def eval_pretr(device, epoch, model, criterion, val_loader):
+def eval_pretr(device, epoch, model, fc, criterion, val_loader):
     model.eval()
 
     running_loss = 0.
@@ -37,6 +37,7 @@ def eval_pretr(device, epoch, model, criterion, val_loader):
             data = data.float().to(device)
 
             our_emb = model(data)
+            our_emb = fc(our_emb)
             label = label.to(device)
 
             loss = criterion(our_emb, label)
