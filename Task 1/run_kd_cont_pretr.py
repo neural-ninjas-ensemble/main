@@ -60,13 +60,16 @@ def main():
 
     sd = deepcopy(model.state_dict())
 
+    training(sd, device, BATCH_SIZE, LR, EPOCHS)
+
+
+def training(sd, device, BATCH_SIZE, LR, EPOCHS):
     model = Encoder()
     model.load_state_dict(sd)
     model.fc = Identity()
     model = model.to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
-
     # TRAINING
     print("TRAINING")
     now = datetime.now()
