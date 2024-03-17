@@ -23,6 +23,8 @@ df["id"] = ids
 df["img"] = imgs
 df["label"] = labels
 
+START = 250
+
 def load_img_from_label(label):
     return df[df['label'] == label]['img'].values[0]
 
@@ -62,8 +64,11 @@ def run_old(output_dir):
 
   target_embedings = []
   checkpoint_embedings = [control_embeding]
-  iter = 0
-  for id in tqdm(ids,total=len(ids)):
+  iter = 1000
+
+  ids = ids[START:]
+
+  for id in tqdm(ids[1000:],total=len(ids)):
       if id != control_id:
           #embedings = []
           iter +=1
@@ -95,14 +100,15 @@ def run_old(output_dir):
 
 
           if iter % 250 == 0:
-              pd.DataFrame(checkpoint_embedings).to_csv(f"./{output_dir}/chekpoint_embeding_{iter}.csv", index=False)
-              pd.DataFrame(target_embedings).to_csv(f"./{output_dir}/target_embeding_{iter}.csv", index=False)
+              pd.DataFrame(checkpoint_embedings).to_csv(f"./{output_dir}/chekpoint_embeding_{iter}_START_{START}.csv", index=False)
+              pd.DataFrame(target_embedings).to_csv(f"./{output_dir}/target_embeding_{iter}_START_{START}.csv", index=False)
 
-  pd.DataFrame(checkpoint_embedings).to_csv(f"./{output_dir}/final_checkpoint_embedings.csv", index=False)
-  pd.DataFrame(target_embedings).to_csv(f"./{output_dir}/all_embeding.csv", index=False)
+  pd.DataFrame(checkpoint_embedings).to_csv(f"./{output_dir}/final_checkpoint_embedings_START_{START}.csv", index=False)
+  pd.DataFrame(target_embedings).to_csv(f"./{output_dir}/all_embeding_START_{START}.csv", index=False)
 
 if __name__ == '__main__':
     now = datetime.now()
-    output_dir = f"output_{now.month}_{now.day}_{now.hour}_{now.minute}_{now.second}"
+
+    output_dir = f"output_{now.month}_{now.day}_{now.hour}_{now.minute}_{now.second}_START_{START}"
     os.mkdir(output_dir)
     run_old(output_dir)
