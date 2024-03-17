@@ -4,24 +4,28 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import Compose, PILToTensor, RandomHorizontalFlip, ColorJitter
 
-from loss_functions import ContrastiveLoss
-from custom_model import Encoder
+from loss_functions import ContKDLoss
+from custom_model import Encoder, Identity
 from taskdataset import TaskDataset
 from dataset_merger import DatasetMerger
-from train import train_epoch
-from test import eval
+from train import train_epoch, train_epoch_pretr
+from test import eval, eval_pretr
 from utils import save_model, save_history, get_position_by_id
 
 import numpy as np
 import pandas as pd
+from datetime import datetime
+from copy import deepcopy
 
 
 def main():
     torch.manual_seed(42)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cpu")
 
     BATCH_SIZE = 128
-    EPOCHS = 30
+    PRETRAINING_EPOCHS = 2
+    EPOCHS = 20
     LR = 0.001
 
     dataset1 = torch.load("./data/ModelStealing.pt")
@@ -43,26 +47,45 @@ def main():
 
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
+    full_loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
 
     model = Encoder().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=LR)
-    # criterion = ContrastiveLoss(BATCH_SIZE)
-    criterion = nn.MSELoss()
+    pretr_criterion = nn.CrossEntropyLoss()
+    pretr_optimizer = optim.Adam(model.parameters(), lr=LR)
+    fc = nn.Linear(512, 50).to(device)
 
+    # PRETRAINING
+    print("PRETRAINING")
+    for epoch in range(PRETRAINING_EPOCHS):
+        train_epoch_pretr(device, model, fc, pretr_criterion, pretr_optimizer, full_loader)
+        eval_pretr(device, epoch, model, fc, pretr_criterion, test_loader)
+
+    training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
+
+
+def training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
+    optimizer = optim.Adam(model.parameters(), lr=LR)
+    criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
     # TRAINING
+    print("TRAINING")
+    now = datetime.now()
+    hour = f"{now.hour}:{now.minute}"
+
+    best_loss = 1000.
     history = np.zeros((EPOCHS, 2))
     for epoch in range(EPOCHS):
         train_epoch(device, model, criterion, optimizer, train_loader)
         loss, l2_loss = eval(device, epoch, model, criterion, test_loader)
 
+        if l2_loss < best_loss:
+            best_loss = l2_loss
+            save_model(model, hour)
+
         history[epoch, 0] = loss
         history[epoch, 1] = l2_loss
 
     # SAVE SCORE HISTORY
-    save_history(history, "cont_loss")
-
-    # SAVE MODEL
-    save_model(model)
+    save_history(history, "kd_cont_pretr_loss", hour)
 
 
 if __name__ == '__main__':

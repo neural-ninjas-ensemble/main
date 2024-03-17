@@ -25,3 +25,25 @@ def eval(device, epoch, model, criterion, val_loader):
     l2_loss = l2_running_loss / num_batches
     print(f"Epoch: {epoch} | Loss: {spec_loss:.4f} | L2-loss: {l2_loss:.4f}")
     return spec_loss, l2_loss
+
+
+def eval_pretr(device, epoch, model, fc, criterion, val_loader):
+    model.eval()
+
+    running_loss = 0.
+    num_batches = 0
+    with torch.no_grad():
+        for batch_idx, (id_, data, label, target_emb) in enumerate(val_loader):
+            data = data.float().to(device)
+
+            our_emb = model(data)
+            our_emb = fc(our_emb)
+            label = label.to(device)
+
+            loss = criterion(our_emb, label)
+
+            running_loss += loss.item()
+            num_batches += 1
+
+    spec_loss = running_loss / num_batches
+    print(f"Epoch: {epoch} | Loss: {spec_loss:.4f}")
