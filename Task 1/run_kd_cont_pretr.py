@@ -62,7 +62,8 @@ def main():
 
 
 def training(device, model, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
-    optimizer = optim.Adam(model.parameters(), lr=LR)
+    # optimizer = optim.Adam(model.parameters(), lr=LR, weight_decay=0.0005)
+    optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9, weight_decay=0.0005)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
     # TRAINING
     print("TRAINING")
