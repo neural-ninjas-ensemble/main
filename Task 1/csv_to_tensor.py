@@ -21,7 +21,9 @@ for vector in pd.read_csv(f'./data/target_embeding_{num2}.csv')['1'].values:
     vector_list.append([ float( i) for i in vector.strip('][').split(', ')])
 df2 = pd.DataFrame(vector_list)
 df3 = pd.concat([df1,df2])
-_3 = pd.concat([_1,_2]).rename('id')['id']
+_3 = pd.concat([_1,_2])
+frame = {'id': _3}
+_3 = pd.DataFrame(frame)
 tensor = torch.tensor(df3.values)
 torch.save(tensor, f'./data/TargetEmbeddings2500.pt')
 _3.to_csv('./data/ids2500.csv', index=False)
