@@ -20,6 +20,7 @@ def train_epoch_pretr(device, model, criterion, optimizer, train_loader):
         optimizer.zero_grad()
 
         data = data.float().to(device)
+        label = label.to(device)
 
         our_emb = model(data)
         loss = criterion(our_emb, label)

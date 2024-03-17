@@ -35,8 +35,9 @@ def eval_pretr(device, epoch, model, criterion, val_loader):
     with torch.no_grad():
         for batch_idx, (id_, data, label, target_emb) in enumerate(val_loader):
             data = data.float().to(device)
-            target_emb = target_emb.to(device)
+
             our_emb = model(data)
+            label = label.to(device)
 
             loss = criterion(our_emb, label)
 
