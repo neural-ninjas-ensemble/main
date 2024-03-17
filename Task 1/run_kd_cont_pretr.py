@@ -60,10 +60,10 @@ def main():
         train_epoch_pretr(device, model, fc, pretr_criterion, pretr_optimizer, full_loader)
         eval_pretr(device, epoch, model, fc, pretr_criterion, test_loader)
 
-    training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
+    training(device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
 
 
-def training(model, device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
+def training(device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
     model = Encoder().to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
