@@ -63,6 +63,7 @@ def main():
         if l2_loss < best_loss:
             best_loss = l2_loss
             save_model(model, hour)
+            model.to(device)
 
         history[epoch, 0] = loss
         history[epoch, 1] = l2_loss
