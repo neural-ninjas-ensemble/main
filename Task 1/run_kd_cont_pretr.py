@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from torchvision.transforms import Compose, PILToTensor
+from torchvision.transforms import Compose, PILToTensor, RandomHorizontalFlip, ColorJitter
 
 from loss_functions import ContKDLoss
 from custom_model import Encoder, Identity
@@ -29,6 +29,8 @@ def main():
     dataset1 = torch.load("./data/ModelStealing.pt")
     dataset1.transform = Compose([
         PILToTensor(),
+        RandomHorizontalFlip(p=0.5),
+        ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
     ])
 
     ids = pd.read_csv("./data/ids2000.csv")["id"]
@@ -50,16 +52,19 @@ def main():
     pretr_optimizer = optim.Adam(model.parameters(), lr=LR)
 
     # PRETRAINING
+    print("PRETRAINING")
     for epoch in range(PRETRAINING_EPOCHS):
         train_epoch_pretr(device, model, pretr_criterion, pretr_optimizer, full_loader)
         eval_pretr(device, epoch, model, pretr_criterion, test_loader)
 
 
     model.fc = Identity()
+    model.to(device)
     optimizer = optim.Adam(model.parameters(), lr=LR)
     criterion = ContKDLoss(BATCH_SIZE, temperature=0.5, kd_T=2, kd_weight=5)
 
     # TRAINING
+    print("TRAINING")
     now = datetime.now()
     hour = f"{now.hour}:{now.minute}"
 
