@@ -60,7 +60,7 @@ def main():
         train_epoch_pretr(device, model, fc, pretr_criterion, pretr_optimizer, full_loader)
         eval_pretr(device, epoch, model, fc, pretr_criterion, test_loader)
 
-    training(device, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
+    training(device, model, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader)
 
 
 def training(device, model, BATCH_SIZE, LR, EPOCHS, train_loader, test_loader):
