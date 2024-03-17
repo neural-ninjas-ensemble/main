@@ -26,11 +26,13 @@ def main():
     BATCH_SIZE = 128
     PRETRAINING_EPOCHS = 5
     EPOCHS = 50
-    LR = 0.001
+    LR = 0.0015
 
     dataset1 = torch.load("./data/ModelStealing.pt")
     dataset1.transform = Compose([
         PILToTensor(),
+        RandomHorizontalFlip(),
+        ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1)
     ])
 
     ids = pd.read_csv("./data/ids2500.csv")["id"]
